@@ -10,9 +10,15 @@
     "test": "jest"
   },
   "dependencies": {
+    "@react-native-async-storage/async-storage": "^2.1.1",
     "axios": "^1.8.0",
+    "i18n-js": "^4.5.1",
+    "i18next": "^24.2.2",
     "react": "19.0.0",
-    "react-native": "0.78.0"
+    "react-i18next": "^15.4.1",
+    "react-native": "0.78.0",
+    "react-native-restart": "^0.0.27",
+    "react-native-safe-area-context": "^5.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
