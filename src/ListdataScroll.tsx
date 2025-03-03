@@ -10,18 +10,30 @@ import {
   View,
 } from 'react-native';
 
+{/** Nanvigator imports */}
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RootStackParamList, Product } from './typesNavigation';
+
+
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import i18n from './i18n'; // Import i18n configuration
+import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
 
 const URL: string = 'https://jsonplaceholder.typicode.com/posts';
 
-interface Product {
+type HomeScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Home'>;
+
+interface Props {
+  navigation: HomeScreenNavigationProp;
+}
+
+/*interface Product {
   id: number;
   title: string;
   body: string;
-}
+}*/
 
-const ListdataScroll: React.FC = () => {
+const ListdataScroll: React.FC<Props> = ({ navigation }) => {
   const [getProducts, setProductsList] = useState<Product[]>([]);
   const [page, setPage] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
@@ -81,57 +93,65 @@ const ListdataScroll: React.FC = () => {
 
     const rtl = lang === 'ar';
     I18nManager.forceRTL(rtl);
-    setIsRTL(rtl); 
+    setIsRTL(rtl);
+  };
+
+  const listDataClick = (item: Product): void => {
+    navigation.navigate('ProductDetails', { item });
   };
 
   const updateProductsList = ({item}: {item: Product}): any => {
     return (
-      <View style={[styles.productList, isRTL && styles.rtl]}>
-        <Text
-          style={[styles.headerText, {textAlign: isRTL ? 'right' : 'left'}]}>
-          {item.id}. {item.title}
-        </Text>
-        <Text
-          style={[styles.subTextBold, {textAlign: isRTL ? 'right' : 'left'}]}>
-          {item.body}
-        </Text>
-      </View>
+      <TouchableOpacity onPress={() => listDataClick(item)}>
+        <View style={[styles.productList, isRTL && styles.rtl]}>
+          <Text
+            style={[styles.headerText, {textAlign: isRTL ? 'right' : 'left'}]}>
+            {item.id}. {item.title}
+          </Text>
+          <Text
+            style={[styles.subTextBold, {textAlign: isRTL ? 'right' : 'left'}]}>
+            {item.body}
+          </Text>
+        </View>
+      </TouchableOpacity>
     );
   };
 
   return (
-    <View>
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity
-          style={[
-            styles.languageButton,
-            language === 'en' && styles.selectedButton,
-          ]}
-          onPress={() => toggleLanguage('en')}>
-          <Text style={styles.buttonText}>English</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[
-            styles.languageButton,
-            language === 'ar' && styles.selectedButton,
-          ]}
-          onPress={() => toggleLanguage('ar')}>
-          <Text style={styles.buttonText}>العربية</Text>
-        </TouchableOpacity>
-      </View>
-      <View style={[styles.flatListContainer, isRTL && styles.rtl]}>
-        <FlatList
-          data={getProducts}
-          renderItem={updateProductsList}
-          keyExtractor={(item, index) => `${item.id}-${index}`}
-          onEndReached={loadNextPageData}
-          onEndReachedThreshold={0.4}
-          ListFooterComponent={() =>
-            loading && <ActivityIndicator size="large" color="#007bff" />
-          }
-        />
-      </View>
-    </View>
+    <SafeAreaProvider>
+      <SafeAreaView style={styles.MainContainer}>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity
+            style={[
+              styles.languageButton,
+              language === 'en' && styles.selectedButton,
+            ]}
+            onPress={() => toggleLanguage('en')}>
+            <Text style={styles.buttonText}>English</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[
+              styles.languageButton,
+              language === 'ar' && styles.selectedButton,
+            ]}
+            onPress={() => toggleLanguage('ar')}>
+            <Text style={styles.buttonText}>العربية</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={[styles.flatListContainer, isRTL && styles.rtl]}>
+          <FlatList
+            data={getProducts}
+            renderItem={updateProductsList}
+            keyExtractor={(item, index) => `${item.id}-${index}`}
+            onEndReached={loadNextPageData}
+            onEndReachedThreshold={0.4}
+            ListFooterComponent={() =>
+              loading && <ActivityIndicator size="large" color="#007bff" />
+            }
+          />
+        </View>
+      </SafeAreaView>
+    </SafeAreaProvider>
   );
 };
 
@@ -139,6 +159,7 @@ const styles = StyleSheet.create({
   MainContainer: {
     flex: 1,
     padding: 5,
+    backgroundColor:'lightgreen'
   },
   flatListContainer: {
     padding: 10,
@@ -159,12 +180,10 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 15,
     color: 'black',
-    
   },
   subTextBold: {
     fontSize: 10,
     color: 'black',
-    
   },
 
   buttonContainer: {
