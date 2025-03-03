@@ -1,6 +1,7 @@
 import React from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
 import {NavigationContainer} from '@react-navigation/native';
+import 'react-native-gesture-handler';
 
 import {StyleSheet, View} from 'react-native';
 
@@ -13,11 +14,9 @@ const Stack = createStackNavigator<RootStackParamList>();
 const App: React.FC = () => {
   return (
     <NavigationContainer>
-      <Stack.Navigator >
-       
-          <Stack.Screen name="Home" component={ListdataScroll} />
-          <Stack.Screen name="ProductDetails" component={ProductDetails} />
-      
+      <Stack.Navigator>
+        <Stack.Screen name="Home" component={ListdataScroll} />
+        <Stack.Screen name="ProductDetails" component={ProductDetails} />
       </Stack.Navigator>
     </NavigationContainer>
   );
