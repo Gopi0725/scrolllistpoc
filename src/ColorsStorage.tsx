@@ -1,0 +1,32 @@
+export const Colors: Record<string, any> = {
+  light: {
+    themeColor: '#FFFFFF',
+    white: '#000000',
+    gray: '#B0B0B0',
+    activeColor: '#007AFF',
+    deactiveColor: '#8E8E93',
+    boxActiveColor: '#E5E5EA',
+    sky: '#87CEEB',
+    commonWhite: '#FFFFFF',
+  },
+  dark: {
+    themeColor: '#000000',
+    white: '#FFFFFF',
+    gray: '#666666',
+    activeColor: '#0A84FF',
+    deactiveColor: '#636366',
+    boxActiveColor: '#1C1C1E',
+    sky: '#4682B4',
+    commonWhite: '#FFFFFF',
+  },
+  default: {
+    themeColor: '#F5F5F5',
+    white: '#000000',
+    gray: '#D3D3D3',
+    activeColor: '#FF9500',
+    deactiveColor: '#C7C7CC',
+    boxActiveColor: '#EFEFF4',
+    sky: '#FFD700',
+    commonWhite: '#FFFFFF',
+  },
+};

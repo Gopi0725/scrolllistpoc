@@ -2,6 +2,8 @@ import React from 'react';
 import {View, Text, StyleSheet,I18nManager} from 'react-native';
 import {RouteProp} from '@react-navigation/native';
 import {RootStackParamList, Product} from './typesNavigation';
+import 'react-native-reanimated';
+
 
 import i18n from './i18n';
 

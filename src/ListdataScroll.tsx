@@ -9,6 +9,9 @@ import {
   View,
 } from 'react-native';
 
+import 'react-native-reanimated';
+
+
 {/** Nanvigator imports */}
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList, Product } from './typesNavigation';
@@ -99,10 +102,14 @@ const ListdataScroll: React.FC<Props> = ({ navigation }) => {
     navigation.navigate('ProductDetails', { item });
   };
 
-  const updateProductsList = ({item}: {item: Product}): any => {
+  const updateProductsList = ({item,index}: {item: Product;index:number}): any => {
+    
+    const alternatingRowColors = ['#F9BDC0', '#15B5B0'];
+    const bgColorCode = alternatingRowColors[index % 2];
+
     return (
       <TouchableOpacity onPress={() => listDataClick(item)}>
-        <View style={[styles.productList, isRTL && styles.rtl]}>
+        <View style={[styles.productList, isRTL && styles.rtl,{backgroundColor:bgColorCode}]}>
           <Text
             style={[styles.headerText, {textAlign: isRTL ? 'right' : 'left'}]}>
             {item.id}. {item.title}
