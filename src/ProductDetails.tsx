@@ -4,6 +4,8 @@ import {RouteProp} from '@react-navigation/native';
 import {RootStackParamList, Product} from './typesNavigation';
 import 'react-native-reanimated';
 
+import {useTheme} from '../src/ThemeChangeModule/ThemeContext';
+import {Colors} from './ColorsStorage';
 
 import i18n from './i18n';
 
@@ -14,10 +16,11 @@ interface Props {
 }
 
 const ProductDetails: React.FC<Props> = ({route}) => {
+  const { theme } = useTheme();
   const {item} = route.params;
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container,{ backgroundColor: Colors[theme].themeColor}]}>
       <View style={styles.detailsContainer}>
         <Text style={styles.title}>{item.title}</Text>
         <Text style={styles.body}>{item.body}</Text>

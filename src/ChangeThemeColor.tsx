@@ -1,11 +1,9 @@
 import React from 'react';
 import RadioButtonRN from 'radio-buttons-react-native';
-import {useNavigation} from '@react-navigation/native';
 import {View, StyleSheet, useColorScheme, Text} from 'react-native';
 import {useTheme} from '../src/ThemeChangeModule/ThemeContext';
 import {Colors} from './ColorsStorage';
 
-import Entypo from 'react-native-vector-icons/Entypo';
 import CommonHeader from './Components/CommonHeader';
 
 const ChangeThemeColor: React.FC = () => {

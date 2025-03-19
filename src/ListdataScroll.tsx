@@ -11,6 +11,8 @@ import {
 
 import 'react-native-reanimated';
 
+import {useTheme} from '../src/ThemeChangeModule/ThemeContext';
+import {Colors} from './ColorsStorage';
 
 {/** Nanvigator imports */}
 import { StackNavigationProp } from '@react-navigation/stack';
@@ -36,6 +38,7 @@ interface Props {
 }*/
 
 const ListdataScroll: React.FC<Props> = ({ navigation }) => {
+  const { theme } = useTheme();
   const [getProducts, setProductsList] = useState<Product[]>([]);
   const [page, setPage] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
@@ -44,6 +47,8 @@ const ListdataScroll: React.FC<Props> = ({ navigation }) => {
   const [language, setLanguage] = useState<string>(i18n.language);
 
   const [isRTL, setIsRTL] = useState<boolean>(I18nManager.isRTL);
+  
+  
 
   useEffect(() => {
     fetchData();
@@ -125,7 +130,7 @@ const ListdataScroll: React.FC<Props> = ({ navigation }) => {
 
   return (
     <SafeAreaProvider>
-      <SafeAreaView style={styles.MainContainer}>
+      <SafeAreaView style={[styles.MainContainer, { backgroundColor: Colors[theme].themeColor }]}>
         <View style={styles.buttonContainer}>
           <TouchableOpacity
             style={[
