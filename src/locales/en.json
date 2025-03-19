@@ -1,0 +1,11 @@
+{
+    "changeTheme": "Change Theme",
+    "productTitle": "Product List",
+    "productDetail": "Product Details",
+    "productDescription": "Description",
+    "lightMode": "Light Mode",
+    "darkMode": "Dark Mode",
+    "thisIsDemo": "This is a demo of default dark/light theme with switch/buttons using async storage.",
+    "backButton": "Back"
+  }
+  
