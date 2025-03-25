@@ -43,9 +43,9 @@ interface Props {
 const ListdataScroll: React.FC<Props> = ({ navigation }) => {
   const { theme } = useTheme();
   const [getProducts, setProductsList] = useState<Product[]>([]);
-  const [page, setPage] = useState<number>(0);
+  const [page, setPage] = useState<number>(1);
   const [loading, setLoading] = useState<boolean>(false);
-  const limit: number = 10;
+  const limit: number = 15;
 
   const [language, setLanguage] = useState<string>(i18n.language);
   const [isRTL, setIsRTL] = useState<boolean>(I18nManager.isRTL);
@@ -55,7 +55,7 @@ const ListdataScroll: React.FC<Props> = ({ navigation }) => {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [page]);
 
   useEffect(() => {
     loadLanguage();
@@ -67,9 +67,9 @@ const ListdataScroll: React.FC<Props> = ({ navigation }) => {
         `${URL}?_page=${page}&_limit=${limit}`,
       );
       const result: Product[] = await getProductsListResponse.json();
-      if (result.length !== 0) {
-        setLoading(true);
-        setProductsList(previousResponse => [...previousResponse, ...result]);
+      const filteredData = result.filter(item => item.id % 2 !== 0);
+      if (filteredData.length > 0) {
+        setProductsList(prev => [...prev, ...filteredData]);
       }
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -78,8 +78,7 @@ const ListdataScroll: React.FC<Props> = ({ navigation }) => {
   };
 
   const loadNextPageData = (): void => {
-    setPage(previousResponse => previousResponse + 1);
-    fetchData();
+    setPage(prevPage => prevPage + 1); 
   };
 
   const loadLanguage = async () => {
@@ -90,7 +89,7 @@ const ListdataScroll: React.FC<Props> = ({ navigation }) => {
       const rtl = savedLang === 'ar';
       I18nManager.forceRTL(rtl);
       setIsRTL(rtl); // Update RTL state
-      setRefresh(prev => !prev); 
+      setRefresh(prev => !prev);
     }
   };
 
@@ -103,7 +102,7 @@ const ListdataScroll: React.FC<Props> = ({ navigation }) => {
     I18nManager.forceRTL(rtl);
     setIsRTL(rtl);
     RNRestart.Restart();
-    setRefresh(prev => !prev); 
+    setRefresh(prev => !prev);
   };
 
   const listDataClick = (item: Product): void => {
@@ -117,13 +116,13 @@ const ListdataScroll: React.FC<Props> = ({ navigation }) => {
 
     return (
       <TouchableOpacity onPress={() => listDataClick(item)}>
-        <View style={[styles.productList, isRTL && styles.rtl,{backgroundColor:bgColorCode}]}>
+        <View style={[styles.productList,{backgroundColor:bgColorCode}]}>
           <Text
-            style={[styles.headerText, {textAlign: isRTL ? 'right' : 'left'}]}>
-            {item.id}. {item.title}
+            style={[styles.headerText]}>
+            {item.id}.{item.title}
           </Text>
           <Text
-            style={[styles.subTextBold, {textAlign: isRTL ? 'right' : 'left'}]}>
+            style={[styles.subTextBold]}>
             {item.body}
           </Text>
         </View>
@@ -152,7 +151,7 @@ const ListdataScroll: React.FC<Props> = ({ navigation }) => {
             <Text style={styles.buttonText}>العربية</Text>
           </TouchableOpacity>
         </View>
-        <View style={[styles.flatListContainer, isRTL && styles.rtl]}>
+        <View style={[styles.flatListContainer]}>
           <FlatList
             data={getProducts}
             renderItem={updateProductsList}
@@ -208,6 +207,9 @@ const styles = StyleSheet.create({
   },
   rtl: {
     alignItems: 'flex-end',
+  },
+  textIcon:{
+
   },
   buttonText: {
     color: 'red',

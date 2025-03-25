@@ -30,10 +30,10 @@ const ProductDetails: React.FC<Props> = ({ route }) => {
   return (
     <View style={[styles.container, { backgroundColor: Colors[theme].themeColor }]}>
       <View style={styles.detailsContainer}>
-        <Text style={[styles.title, { textAlign: I18nManager.isRTL ? 'right' : 'left' }]}>
+        <Text style={[styles.title]}>
           {item.title}
         </Text>
-        <Text style={[styles.body, { textAlign: I18nManager.isRTL ? 'right' : 'left' }]}>
+        <Text style={[styles.body]}>
           {item.body}
         </Text>
       </View>
