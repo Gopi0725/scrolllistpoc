@@ -5,10 +5,12 @@ import {useTheme} from '../src/ThemeChangeModule/ThemeContext';
 import {Colors} from './ColorsStorage';
 
 import CommonHeader from './Components/CommonHeader';
+import { useTranslation } from 'react-i18next';
 
 const ChangeThemeColor: React.FC = () => {
   const {theme, setTheme} = useTheme();
   const defaultTheme = useColorScheme();
+  const {t} = useTranslation();
 
   interface ThemeData {
     label: string;
@@ -17,8 +19,8 @@ const ChangeThemeColor: React.FC = () => {
 
   const styles = styling(theme);
   const radioButtonData: ThemeData[] = [
-    {label: 'Light Mode', value: 'light'},
-    {label: 'Dark Mode', value: 'dark'},
+    {label: t("lightMode"), value: 'light'},
+    {label: t("darkMode"), value: 'dark'},
   ];
 
   const themeOperations = (theme: string): void => {
@@ -34,11 +36,10 @@ const ChangeThemeColor: React.FC = () => {
   return (
     <View style={styles.Maincontainer}>
        {/* Common Header */}
-       <CommonHeader title="Change Theme" />
+       <CommonHeader title={t("changeTheme")}/>
       <View style={styles.container}>
         <Text style={styles.textStyle}>
-          This is a demo of default dark/light theme with switch/buttons using
-          async storage.
+          {t("thisIsDemo")}
         </Text>
 
         <RadioButtonRN

@@ -4,6 +4,7 @@ import { useNavigation, useRoute, DrawerActions } from '@react-navigation/native
 import Entypo from 'react-native-vector-icons/Entypo';
 import Ionicons from 'react-native-vector-icons/Ionicons'; // For back icon
 
+
 interface CommonHeaderProps {
   title: string;
 }
@@ -11,7 +12,7 @@ interface CommonHeaderProps {
 const CommonHeader: React.FC<CommonHeaderProps> = ({ title }) => {
   const navigation = useNavigation();
   const route = useRoute();
-
+  
   const canGoBack = navigation.canGoBack() && route.name === 'ProductDetails'; // Show back button only if not on Home
 
   return (

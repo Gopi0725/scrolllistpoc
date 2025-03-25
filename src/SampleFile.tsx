@@ -1,7 +1,6 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
-  Alert,
   FlatList,
   I18nManager,
   StyleSheet,
@@ -9,22 +8,13 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-
-import 'react-native-reanimated';
-
-import {useTheme} from '../src/ThemeChangeModule/ThemeContext';
-import {Colors} from './ColorsStorage';
-
-{/** Nanvigator imports */}
+import { useTheme } from '../src/ThemeChangeModule/ThemeContext';
+import { Colors } from './ColorsStorage';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList, Product } from './typesNavigation';
-
-
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import i18n from './i18n'; // Import i18n configuration
-import RNRestart from "react-native-restart";
-import { useTranslation } from 'react-i18next';
-import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
+import i18n from './i18n'; 
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 
 const URL: string = 'https://jsonplaceholder.typicode.com/posts';
 
@@ -34,42 +24,32 @@ interface Props {
   navigation: HomeScreenNavigationProp;
 }
 
-/*interface Product {
-  id: number;
-  title: string;
-  body: string;
-}*/
-
 const ListdataScroll: React.FC<Props> = ({ navigation }) => {
   const { theme } = useTheme();
-  const [getProducts, setProductsList] = useState<Product[]>([]);
-  const [page, setPage] = useState<number>(0);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [page, setPage] = useState<number>(1);
   const [loading, setLoading] = useState<boolean>(false);
   const limit: number = 10;
-
   const [language, setLanguage] = useState<string>(i18n.language);
   const [isRTL, setIsRTL] = useState<boolean>(I18nManager.isRTL);
-  const [refresh, setRefresh] = useState<boolean>(false);//Force re-render on language change
-  
-  const {t} = useTranslation();
+  const [refresh, setRefresh] = useState<boolean>(false); // 🔄 Force re-render on language change
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    fetchData(page);
+  }, [page]);
 
   useEffect(() => {
     loadLanguage();
   }, []);
-  const fetchData = async (): Promise<void> => {
+
+  const fetchData = async (currentPage: number): Promise<void> => {
     if (loading) return;
+    setLoading(true);
     try {
-      const getProductsListResponse: Response = await fetch(
-        `${URL}?_page=${page}&_limit=${limit}`,
-      );
-      const result: Product[] = await getProductsListResponse.json();
+      const response: Response = await fetch(`${URL}?_page=${currentPage}&_limit=${limit}`);
+      const result: Product[] = await response.json();
       if (result.length !== 0) {
-        setLoading(true);
-        setProductsList(previousResponse => [...previousResponse, ...result]);
+        setProducts(prev => [...prev, ...result]);
       }
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -78,8 +58,7 @@ const ListdataScroll: React.FC<Props> = ({ navigation }) => {
   };
 
   const loadNextPageData = (): void => {
-    setPage(previousResponse => previousResponse + 1);
-    fetchData();
+    if (!loading) setPage(prev => prev + 1);
   };
 
   const loadLanguage = async () => {
@@ -89,8 +68,8 @@ const ListdataScroll: React.FC<Props> = ({ navigation }) => {
       setLanguage(savedLang);
       const rtl = savedLang === 'ar';
       I18nManager.forceRTL(rtl);
-      setIsRTL(rtl); // Update RTL state
-      setRefresh(prev => !prev); 
+      setIsRTL(rtl);
+      setRefresh(prev => !prev); // 🔄 Force re-render
     }
   };
 
@@ -102,28 +81,23 @@ const ListdataScroll: React.FC<Props> = ({ navigation }) => {
     const rtl = lang === 'ar';
     I18nManager.forceRTL(rtl);
     setIsRTL(rtl);
-    RNRestart.Restart();
-    setRefresh(prev => !prev); 
+    setRefresh(prev => !prev); // 🔄 Force re-render
   };
-
   const listDataClick = (item: Product): void => {
-    navigation.navigate(('ProductDetails'), { item });
+    navigation.navigate('ProductDetails', { item });
   };
 
-  const updateProductsList = ({item,index}: {item: Product;index:number}): any => {
-    
+  const renderProduct = ({ item, index }: { item: Product; index: number }) => {
     const alternatingRowColors = ['#F9BDC0', '#15B5B0'];
     const bgColorCode = alternatingRowColors[index % 2];
 
     return (
       <TouchableOpacity onPress={() => listDataClick(item)}>
-        <View style={[styles.productList, isRTL && styles.rtl,{backgroundColor:bgColorCode}]}>
-          <Text
-            style={[styles.headerText, {textAlign: isRTL ? 'right' : 'left'}]}>
+        <View style={[styles.productList, isRTL && styles.rtl, { backgroundColor: bgColorCode }]}>
+          <Text style={[styles.headerText, { textAlign: isRTL ? 'right' : 'left' }]}>
             {item.id}. {item.title}
           </Text>
-          <Text
-            style={[styles.subTextBold, {textAlign: isRTL ? 'right' : 'left'}]}>
+          <Text style={[styles.subTextBold, { textAlign: isRTL ? 'right' : 'left' }]}>
             {item.body}
           </Text>
         </View>
@@ -134,34 +108,32 @@ const ListdataScroll: React.FC<Props> = ({ navigation }) => {
   return (
     <SafeAreaProvider>
       <SafeAreaView style={[styles.MainContainer, { backgroundColor: Colors[theme].themeColor }]}>
+        {/* Language Selection */}
         <View style={styles.buttonContainer}>
           <TouchableOpacity
-            style={[
-              styles.languageButton,
-              language === 'en' && styles.selectedButton,
-            ]}
+            style={[styles.languageButton, language === 'en' && styles.selectedButton]}
             onPress={() => toggleLanguage('en')}>
-            <Text style={styles.buttonText}>English</Text>
+            <Text style={styles.buttonText}>{i18n.t('english')}</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={[
-              styles.languageButton,
-              language === 'ar' && styles.selectedButton,
-            ]}
+            style={[styles.languageButton, language === 'ar' && styles.selectedButton]}
             onPress={() => toggleLanguage('ar')}>
-            <Text style={styles.buttonText}>العربية</Text>
+            <Text style={styles.buttonText}>{i18n.t('arabic')}</Text>
           </TouchableOpacity>
         </View>
+
+        {/* Product List */}
         <View style={[styles.flatListContainer, isRTL && styles.rtl]}>
           <FlatList
-            data={getProducts}
-            renderItem={updateProductsList}
-            keyExtractor={(item, index) => `${item.id}-${index}`}
+            data={products}
+            renderItem={renderProduct}
+            keyExtractor={(item) => item.id.toString()}
             onEndReached={loadNextPageData}
             onEndReachedThreshold={0.4}
             ListFooterComponent={() =>
               loading && <ActivityIndicator size="large" color="#007bff" />
             }
+            extraData={refresh} // 🔄 Force re-render when language changes
           />
         </View>
       </SafeAreaView>
@@ -173,7 +145,7 @@ const styles = StyleSheet.create({
   MainContainer: {
     flex: 1,
     padding: 5,
-    backgroundColor:'lightgreen'
+    backgroundColor: 'lightgreen',
   },
   flatListContainer: {
     padding: 10,
@@ -182,7 +154,6 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     height: '90%',
   },
-
   productList: {
     borderWidth: 1,
     borderColor: 'red',
@@ -199,7 +170,6 @@ const styles = StyleSheet.create({
     fontSize: 10,
     color: 'black',
   },
-
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
